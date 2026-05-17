@@ -1,11 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Link Converter</title>
-    <link rel="manifest" href="manifest.json">
     <style>
         /* --- CSS VARIABLES (THE TRUTH TOKENS) --- */
         :root {
@@ -228,8 +226,8 @@
 
         /* --- OUTPUT STYLING --- */
         .output-grid {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: var(--space-lg);
         }
 
@@ -237,6 +235,7 @@
             display: flex;
             flex-direction: column;
             gap: var(--space-xs);
+            width: 100%;
         }
 
         .output-label {
@@ -257,10 +256,13 @@
             border: var(--border-width) solid var(--border-color);
             border-radius: var(--radius-sm);
             overflow: hidden;
+            width: 100%;
+            max-width: 100%;
         }
 
         .output-code {
             flex: 1;
+            min-width: 0; /* CRITICAL BUG FIX: allows the flex item to shrink below content size so scrollbars trigger instead of breaking layouts */
             color: var(--accent-light);
             padding: var(--space-sm) var(--space-md);
             font-family: "Courier New", Courier, monospace;
@@ -290,6 +292,10 @@
             border-left: var(--border-width) solid var(--border-color);
             height: 100%;
             white-space: nowrap;
+            flex-shrink: 0; /* CRITICAL BUG FIX: prevents the button from being compressed to zero-width on small viewports */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* --- UTILS & TOASTS --- */
@@ -539,13 +545,26 @@
 
         // --- CONVERSION ENGINE ---
         function processGithubUrls(input) {
+            // Trim whitespace and clear empty inputs
             const trimmed = input.trim();
             if (!trimmed) {
                 outputCard.style.display = 'none';
                 return;
             }
 
-            let inputUrl = trimmed;
+            // Support multi-line pastes by taking the first non-empty line
+            const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length === 0) {
+                outputCard.style.display = 'none';
+                return;
+            }
+
+            let inputUrl = lines[0];
+
+            // Strips query parameters (?...) and anchors (#...) which often result from copying GitHub links directly from code search indexes
+            inputUrl = inputUrl.split('?')[0].split('#')[0];
+
+            // Prepend https scheme if omitted by browser clipboard selection
             if (!/^https?:\/\//i.test(inputUrl)) {
                 inputUrl = 'https://' + inputUrl;
             }
@@ -560,4 +579,194 @@
                 if (host === 'github.com') {
                     const pathParts = url.pathname.split('/').filter(p => p !== '');
                     if (pathParts.length >= 2) {
-                        const owner = p
+                        const owner = pathParts[0];
+                        const repo = pathParts[1];
+                        const isBlobOrRaw = pathParts[2] === 'blob' || pathParts[2] === 'raw';
+                        
+                        let branch = '';
+                        let subPathParts = [];
+                        
+                        if (isBlobOrRaw && pathParts.length > 3) {
+                            branch = pathParts[3];
+                            subPathParts = pathParts.slice(4);
+                        } else if (pathParts.length > 2) {
+                            // Tree or other non-standard directory navigation branches
+                            if (pathParts[2] === 'tree' && pathParts.length > 3) {
+                                branch = pathParts[3];
+                                subPathParts = pathParts.slice(4);
+                            } else {
+                                subPathParts = pathParts.slice(2);
+                            }
+                        }
+
+                        const subPath = subPathParts.join('/');
+
+                        // Process RAW representation
+                        if (branch) {
+                            rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${subPath}`;
+                        } else {
+                            rawUrl = inputUrl
+                                .replace(/https?:\/\/github\.com/i, 'https://raw.githubusercontent.com')
+                                .replace(/\/blob\//i, '/');
+                        }
+
+                        // Process PAGES representation
+                        if (subPath) {
+                            pagesUrl = `https://${owner}.github.io/${repo}/${subPath}`;
+                        } else {
+                            pagesUrl = `https://${owner}.github.io/${repo}/`;
+                        }
+                    }
+                } else if (host === 'raw.githubusercontent.com') {
+                    // Reverse translation logic back to Pages
+                    const pathParts = url.pathname.split('/').filter(p => p !== '');
+                    if (pathParts.length >= 3) {
+                        const owner = pathParts[0];
+                        const repo = pathParts[1];
+                        const branch = pathParts[2];
+                        const subPath = pathParts.slice(3).join('/');
+
+                        rawUrl = inputUrl;
+                        pagesUrl = `https://${owner}.github.io/${repo}/${subPath}`;
+                    }
+                } else if (host.endsWith('.github.io')) {
+                    const owner = host.split('.')[0];
+                    const pathParts = url.pathname.split('/').filter(p => p !== '');
+                    if (pathParts.length >= 1) {
+                        const repo = pathParts[0];
+                        const subPath = pathParts.slice(1).join('/');
+                        
+                        rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${subPath}`;
+                        pagesUrl = inputUrl;
+                    }
+                }
+
+                // If fallback patterns match, enforce clean standard outputs
+                if (!rawUrl && !pagesUrl) {
+                    rawUrl = inputUrl
+                        .replace(/https?:\/\/github\.com/i, 'https://raw.githubusercontent.com')
+                        .replace(/\/blob\//i, '/');
+                    pagesUrl = '';
+                }
+
+                // Set displays
+                rawOutput.textContent = rawUrl;
+                pagesOutput.textContent = pagesUrl || 'Not a standard path directory conversion.';
+                
+                // Markdown Syntax Formulations
+                mdOutput.textContent = `![Image](${rawUrl})`;
+                htmlOutput.textContent = `<img src="${rawUrl}" alt="Media Resource" />`;
+
+                // Update Graphic Previews
+                updatePreview(rawUrl);
+
+                outputCard.style.display = 'block';
+
+            } catch (err) {
+                // Fault-tolerant string processing fallbacks on parsing errors
+                const processedFallback = inputUrl
+                    .replace(/https?:\/\/github\.com/i, 'https://raw.githubusercontent.com')
+                    .replace(/\/blob\//i, '/');
+
+                rawOutput.textContent = processedFallback;
+                pagesOutput.textContent = 'Invalid complex URL layout for Pages parsing.';
+                mdOutput.textContent = `![Image](${processedFallback})`;
+                htmlOutput.textContent = `<img src="${processedFallback}" alt="Media Resource" />`;
+                updatePreview(processedFallback);
+                outputCard.style.display = 'block';
+            }
+        }
+
+        // --- PREVIEW RENDER ---
+        function updatePreview(url) {
+            const isImage = /\.(jpeg|jpg|gif|png|svg|webp|bmp|ico)$/i.test(url);
+            
+            if (isImage) {
+                previewBox.innerHTML = `
+                    <img src="${url}" alt="Converted Asset Preview" onerror="handlePreviewError()" />
+                `;
+            } else {
+                previewBox.innerHTML = `
+                    <div class="placeholder-text" style="color: var(--accent-light);">
+                        Not an image asset (.jpg, .png, .svg, etc.). Asset URL is active and ready for source distribution.
+                    </div>
+                `;
+            }
+        }
+
+        function handlePreviewError() {
+            previewBox.innerHTML = `
+                <div class="placeholder-text" style="color: #ea5455;">
+                    Unable to load image preview. Double check standard directory properties or visibility credentials.
+                </div>
+            `;
+        }
+
+        // --- ACTIONS & LISTENERS ---
+        convertBtn.addEventListener('click', () => {
+            processGithubUrls(urlInput.value);
+        });
+
+        urlInput.addEventListener('input', () => {
+            processGithubUrls(urlInput.value);
+        });
+
+        // Instant parsing on standard system paste triggers
+        urlInput.addEventListener('paste', () => {
+            setTimeout(() => {
+                processGithubUrls(urlInput.value);
+            }, 50);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            urlInput.value = '';
+            outputCard.style.display = 'none';
+            showToast('Input cleared');
+        });
+
+        // --- ROBUST CLIPBOARD INTEGRATION ---
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const textToCopy = document.getElementById(targetId).textContent;
+
+                if (!textToCopy || textToCopy.startsWith('Invalid') || textToCopy.startsWith('Not a standard')) {
+                    showToast('Nothing valid to copy');
+                    return;
+                }
+
+                // Universal fallback container copy execution
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = textToCopy;
+                tempTextArea.style.position = 'absolute';
+                tempTextArea.style.left = '-9999px';
+                document.body.appendChild(tempTextArea);
+                
+                tempTextArea.select();
+                tempTextArea.setSelectionRange(0, 99999);
+
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        btn.classList.add('copied');
+                        btn.textContent = 'Copied!';
+                        showToast('Copied to clipboard!', 'success');
+                        
+                        setTimeout(() => {
+                            btn.classList.remove('copied');
+                            btn.textContent = 'Copy';
+                        }, 1500);
+                    } else {
+                        showToast('Failed to copy. Try highlighting and copying manually.');
+                    }
+                } catch (err) {
+                    showToast('Fallback copy execution failed.');
+                }
+
+                document.body.removeChild(tempTextArea);
+            });
+        });
+    </script>
+</body>
+</html>
+
