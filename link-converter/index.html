@@ -1,154 +1,563 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>GitHub Link Converter</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Link Converter</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* --- CSS VARIABLES (THE TRUTH TOKENS) --- */
+        :root {
+            /* Nako-Default-Purple Color Palette */
+            --bg-color: #0e0e11;
+            --container-bg: #18181f;
+            --input-bg: #0f0f12;
+            --box-bg: #0f0f12;
+            --accent-dark: #663657;
+            --accent-dark-hover: #81456e;
+            --accent-light: #A77A99;
+            --accent-light-hover: #c5a4bc;
+            --text-main: #b4b4bc;
+            --text-muted: #5a5a66;
+            --text-bright: #ffffff;
+            --border-color: #2d2d38;
+            --success-bg: #2a4f32;
+            --success-border: #3b6e47;
 
-<link rel="manifest" href="manifest.json">
+            /* Spacing & Layout Scale */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 12px;
+            --space-lg: 16px;
+            --space-xl: 20px;
+            --space-2xl: 24px;
+            --max-width: 900px;
 
-<style>
-body {
-  font-family: Arial;
-  background: #111;
-  color: #eee;
-  padding: 20px;
-}
+            /* Borders & Depth Elevation */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --border-width: 1px;
+            --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.6);
+            --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.3);
 
-.container {
-  max-width: 800px;
-  margin: auto;
-}
+            /* Animation & Transitions */
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  background: #222;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 8px;
-}
+        /* --- BASIC RESET & BODY STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.box {
-  margin-top: 20px;
-  padding: 12px;
-  background: #1a1a1a;
-  border-radius: 8px;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--space-2xl) var(--space-lg);
+            overflow-x: hidden;
+        }
 
-.result {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+        @media (max-width: 600px) {
+            body {
+                padding: var(--space-lg) var(--space-sm);
+            }
+        }
 
-code {
-  flex: 1;
-  background: black;
-  padding: 8px;
-  border-radius: 6px;
-  overflow-x: auto;
-}
+        /* --- MAIN WRAPPER CONTAINER --- */
+        .app-container {
+            width: 100%;
+            max-width: var(--max-width);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
 
-button {
-  padding: 8px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-}
+        /* --- TYPOGRAPHY --- */
+        h1.title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text-bright);
+            margin: 0 0 var(--space-xs) 0;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
 
-.small {
-  font-size: 12px;
-  color: #aaa;
-}
-</style>
+        .subtitle {
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin-bottom: var(--space-sm);
+        }
+
+        h2.section-header {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-bright);
+            margin: 0 0 var(--space-lg) 0;
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- CARDS & CONTAINER BOXES --- */
+        .card {
+            background-color: var(--container-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-deep);
+            padding: var(--space-2xl);
+            transition: border-color var(--transition-normal);
+        }
+
+        .card:hover {
+            border-color: var(--accent-dark);
+        }
+
+        /* --- FORMS & INPUT ELEMENTS --- */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-bright);
+            font-size: 0.9rem;
+        }
+
+        textarea.input-field {
+            background-color: var(--input-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-bright);
+            padding: var(--space-md);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            min-height: 100px;
+            width: 100%;
+            transition: all var(--transition-normal);
+        }
+
+        textarea.input-field:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 2px rgba(167, 122, 153, 0.25);
+        }
+
+        /* --- BUTTONS --- */
+        .btn-primary {
+            width: 100%;
+            background-color: var(--accent-dark);
+            color: var(--text-bright);
+            border: var(--border-width) solid var(--border-color);
+            padding: var(--space-md) var(--space-2xl);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-dark-hover);
+            border-color: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background-color: var(--box-bg);
+            border: var(--border-width) solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all var(--transition-normal);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-light);
+            color: var(--bg-color);
+            border-color: var(--accent-light);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary.copied {
+            background-color: var(--success-bg) !important;
+            color: #ffffff !important;
+            border-color: var(--success-border) !important;
+        }
+
+        /* --- OUTPUT STYLING --- */
+        .output-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+        }
+
+        .output-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .output-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-light);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .output-wrapper {
+            display: flex;
+            align-items: stretch;
+            background-color: var(--box-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .output-code {
+            flex: 1;
+            color: var(--accent-light);
+            padding: var(--space-sm) var(--space-md);
+            font-family: "Courier New", Courier, monospace;
+            white-space: nowrap;
+            overflow-x: auto;
+            align-content: center;
+        }
+
+        /* Custom Scrollbar */
+        .output-code::-webkit-scrollbar {
+            height: 5px;
+        }
+        .output-code::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .output-code::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+        .output-code::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
+        .output-wrapper .btn-secondary {
+            border-radius: 0;
+            border: none;
+            border-left: var(--border-width) solid var(--border-color);
+            height: 100%;
+            white-space: nowrap;
+        }
+
+        /* --- UTILS & TOASTS --- */
+        .toast-container {
+            position: fixed;
+            bottom: var(--space-2xl);
+            right: var(--space-2xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            z-index: 100;
+        }
+
+        .toast {
+            background-color: var(--container-bg);
+            border-left: 4px solid var(--accent-light);
+            box-shadow: var(--shadow-deep);
+            color: var(--text-bright);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            transform: translateY(100px);
+            opacity: 0;
+            animation: slideIn var(--transition-normal) forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left-color: var(--success-border);
+        }
+
+        /* --- QUICK CONVERT BANNER / INFO --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+
+        .info-card {
+            background-color: var(--box-bg);
+            border: var(--border-width) solid var(--border-color);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+        }
+
+        .info-card strong {
+            color: var(--text-bright);
+            display: block;
+            margin-bottom: var(--space-xs);
+        }
+
+        /* --- PREVIEW PANEL --- */
+        .preview-box {
+            border: var(--border-width) dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            background-color: var(--box-bg);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-top: var(--space-md);
+            position: relative;
+        }
+
+        .preview-box img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: var(--radius-sm);
+            object-fit: contain;
+        }
+
+        .placeholder-text {
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* SVGs */
+        .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header>
+            <h1 class="title">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GitHub Link Converter
+            </h1>
+            <p class="subtitle">Convert standard repository paths to raw assets, pages deployment links, and embed syntaxes instantly.</p>
+        </header>
 
-<h1>GitHub Link Converter</h1>
+        <!-- Main Card: Input & Auto-conversion -->
+        <main class="card">
+            <h2 class="section-header">Paste & Convert</h2>
+            
+            <div class="form-group">
+                <label for="urlInput">Enter normal GitHub repository URL:</label>
+                <textarea 
+                    id="urlInput" 
+                    class="input-field" 
+                    placeholder="Example: https://github.com/nako-hikari/support-files/blob/main/link-converter/index.html&#10;Or long press/click 'Copy Link Address' and paste..."
+                    autocomplete="off"
+                    autofocus
+                ></textarea>
+            </div>
 
-<input id="input" placeholder="Paste GitHub link here">
+            <div style="display: flex; gap: var(--space-md); margin-bottom: var(--space-xl);">
+                <button id="convertBtn" class="btn-primary">
+                    <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z" fill="white"/>
+                    </svg>
+                    Convert Link
+                </button>
+                <button id="clearBtn" class="btn-secondary" style="height: 48px; padding: 0 var(--space-lg);">Clear</button>
+            </div>
 
-<div class="box">
-  <h3>Raw Link</h3>
-  <div class="result">
-    <code id="raw"></code>
-    <button onclick="copy('raw')">Copy</button>
-  </div>
-</div>
+            <div class="info-grid">
+                <div class="info-card">
+                    <strong>Rule /blob/ &rarr; Raw</strong>
+                    Replaces main path structures with standard <code style="color: var(--accent-light);">raw.githubusercontent.com</code> domains.
+                </div>
+                <div class="info-card">
+                    <strong>Repository &rarr; Pages</strong>
+                    Correctly remaps user directories directly to live <code style="color: var(--accent-light);">github.io</code> environments.
+                </div>
+            </div>
+        </main>
 
-<div class="box">
-  <h3>HTML Image Tag</h3>
-  <div class="result">
-    <code id="html"></code>
-    <button onclick="copy('html')">Copy</button>
-  </div>
-</div>
+        <!-- Output Card -->
+        <section class="card" id="outputCard" style="display: none;">
+            <h2 class="section-header">Outputs & Conversions</h2>
 
-<div class="box">
-  <h3>GitHub Pages Link</h3>
-  <div class="result">
-    <code id="pages"></code>
-    <button onclick="copy('pages')">Copy</button>
-  </div>
-</div>
+            <div class="output-grid">
+                <!-- Raw Link -->
+                <div class="output-item">
+                    <div class="output-label">
+                        <span>Raw Resource Link (for images/files)</span>
+                    </div>
+                    <div class="output-wrapper">
+                        <div class="output-code" id="rawOutput"></div>
+                        <button class="btn-secondary copy-btn" data-target="rawOutput">Copy</button>
+                    </div>
+                </div>
 
-<hr style="margin:30px 0;">
+                <!-- Pages Link -->
+                <div class="output-item">
+                    <div class="output-label">
+                        <span>Pages Live View / Website Link</span>
+                    </div>
+                    <div class="output-wrapper">
+                        <div class="output-code" id="pagesOutput"></div>
+                        <button class="btn-secondary copy-btn" data-target="pagesOutput">Copy</button>
+                    </div>
+                </div>
 
-<div class="small">
-<p><b>Raw:</b> for images/files in HTML</p>
-<p><b>Pages:</b> website link</p>
-<p><b>Rule:</b> /blob/ → raw.githubusercontent.com</p>
-</div>
+                <!-- Markdown Image Syntax -->
+                <div class="output-item" id="mdOutputContainer">
+                    <div class="output-label">
+                        <span>Markdown Image Syntax</span>
+                    </div>
+                    <div class="output-wrapper">
+                        <div class="output-code" id="mdOutput"></div>
+                        <button class="btn-secondary copy-btn" data-target="mdOutput">Copy</button>
+                    </div>
+                </div>
 
-</div>
+                <!-- HTML Image Tag -->
+                <div class="output-item" id="htmlOutputContainer">
+                    <div class="output-label">
+                        <span>HTML Image Element</span>
+                    </div>
+                    <div class="output-wrapper">
+                        <div class="output-code" id="htmlOutput"></div>
+                        <button class="btn-secondary copy-btn" data-target="htmlOutput">Copy</button>
+                    </div>
+                </div>
+            </div>
 
-<script>
-const input = document.getElementById("input");
+            <!-- Preview Frame -->
+            <div class="output-item" style="margin-top: var(--space-xl);">
+                <div class="output-label">Media Preview</div>
+                <div class="preview-box" id="previewBox">
+                    <div class="placeholder-text">Input an image/media-compatible GitHub URL to preview raw assets here.</div>
+                </div>
+            </div>
+        </section>
 
-input.addEventListener("input", () => {
-  let url = input.value.trim();
+    </div>
 
-  let raw = "";
-  let html = "";
-  let pages = "";
+    <!-- Notification Toast Wrapper -->
+    <div class="toast-container" id="toastContainer"></div>
 
-  if (url.includes("github.com") && url.includes("/blob/")) {
-    raw = url
-      .replace("github.com", "raw.githubusercontent.com")
-      .replace("/blob/", "/");
+    <script>
+        // --- SELECTORS ---
+        const urlInput = document.getElementById('urlInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const outputCard = document.getElementById('outputCard');
+        
+        const rawOutput = document.getElementById('rawOutput');
+        const pagesOutput = document.getElementById('pagesOutput');
+        const mdOutput = document.getElementById('mdOutput');
+        const htmlOutput = document.getElementById('htmlOutput');
+        const previewBox = document.getElementById('previewBox');
 
-    html = `<img src="${raw}">`;
-  } else {
-    raw = "Paste a /blob/ link";
-    html = "Invalid input";
-  }
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(message, type = 'normal') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'success' : ''}`;
+            toast.innerHTML = `
+                <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
+                </svg>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.addEventListener('transitionend', () => toast.remove());
+            }, 2500);
+        }
 
-  if (url.includes("github.com")) {
-    let parts = url.split("/");
-    let user = parts[3];
-    let repo = parts[4];
-    pages = `https://${user}.github.io/${repo}/`;
-  } else {
-    pages = "Not detected";
-  }
+        // --- CONVERSION ENGINE ---
+        function processGithubUrls(input) {
+            const trimmed = input.trim();
+            if (!trimmed) {
+                outputCard.style.display = 'none';
+                return;
+            }
 
-  document.getElementById("raw").textContent = raw;
-  document.getElementById("html").textContent = html;
-  document.getElementById("pages").textContent = pages;
-});
+            let inputUrl = trimmed;
+            if (!/^https?:\/\//i.test(inputUrl)) {
+                inputUrl = 'https://' + inputUrl;
+            }
 
-function copy(id) {
-  navigator.clipboard.writeText(
-    document.getElementById(id).textContent
-  );
-}
-</script>
+            try {
+                const url = new URL(inputUrl);
+                const host = url.hostname.toLowerCase();
+                
+                let rawUrl = '';
+                let pagesUrl = '';
 
-</body>
-</html>
+                if (host === 'github.com') {
+                    const pathParts = url.pathname.split('/').filter(p => p !== '');
+                    if (pathParts.length >= 2) {
+                        const owner = p
