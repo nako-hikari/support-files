@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GitHub Link Converter</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body {
+  font-family: Arial;
+  background: #111;
+  color: #eee;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 8px;
+}
+
+.box {
+  margin-top: 20px;
+  padding: 12px;
+  background: #1a1a1a;
+  border-radius: 8px;
+}
+
+.result {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+code {
+  flex: 1;
+  background: black;
+  padding: 8px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+button {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+.small {
+  font-size: 12px;
+  color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>GitHub Link Converter</h1>
+
+<input id="input" placeholder="Paste GitHub link here">
+
+<div class="box">
+  <h3>Raw Link</h3>
+  <div class="result">
+    <code id="raw"></code>
+    <button onclick="copy('raw')">Copy</button>
+  </div>
+</div>
+
+<div class="box">
+  <h3>HTML Image Tag</h3>
+  <div class="result">
+    <code id="html"></code>
+    <button onclick="copy('html')">Copy</button>
+  </div>
+</div>
+
+<div class="box">
+  <h3>GitHub Pages Link</h3>
+  <div class="result">
+    <code id="pages"></code>
+    <button onclick="copy('pages')">Copy</button>
+  </div>
+</div>
+
+<hr style="margin:30px 0;">
+
+<div class="small">
+<p><b>Raw:</b> for images/files in HTML</p>
+<p><b>Pages:</b> website link</p>
+<p><b>Rule:</b> /blob/ → raw.githubusercontent.com</p>
+</div>
+
+</div>
+
+<script>
+const input = document.getElementById("input");
+
+input.addEventListener("input", () => {
+  let url = input.value.trim();
+
+  let raw = "";
+  let html = "";
+  let pages = "";
+
+  if (url.includes("github.com") && url.includes("/blob/")) {
+    raw = url
+      .replace("github.com", "raw.githubusercontent.com")
+      .replace("/blob/", "/");
+
+    html = `<img src="${raw}">`;
+  } else {
+    raw = "Paste a /blob/ link";
+    html = "Invalid input";
+  }
+
+  if (url.includes("github.com")) {
+    let parts = url.split("/");
+    let user = parts[3];
+    let repo = parts[4];
+    pages = `https://${user}.github.io/${repo}/`;
+  } else {
+    pages = "Not detected";
+  }
+
+  document.getElementById("raw").textContent = raw;
+  document.getElementById("html").textContent = html;
+  document.getElementById("pages").textContent = pages;
+});
+
+function copy(id) {
+  navigator.clipboard.writeText(
+    document.getElementById(id).textContent
+  );
+}
+</script>
+
+</body>
+</html>
