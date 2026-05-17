@@ -553,4 +553,175 @@
                             branch = pathParts[3];
                             subPathParts = pathParts.slice(4);
                         } else if (pathParts.length > 2) {
-                            if (pathParts[2] === 'tree' && p
+                            if (pathParts[2] === 'tree' && pathParts.length > 3) {
+                                branch = pathParts[3];
+                                subPathParts = pathParts.slice(4);
+                            } else {
+                                subPathParts = pathParts.slice(2);
+                            }
+                        }
+
+                        const subPath = subPathParts.join('/');
+
+                        if (branch) {
+                            rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${subPath}`;
+                        } else {
+                            rawUrl = inputUrl
+                                .replace(/https?:\/\/github\.com/i, 'https://raw.githubusercontent.com')
+                                .replace(/\/blob\//i, '/');
+                        }
+
+                        if (subPath) {
+                            pagesUrl = `https://${owner}.github.io/${repo}/${subPath}`;
+                        } else {
+                            pagesUrl = `https://${owner}.github.io/${repo}/`;
+                        }
+                    }
+                } else if (host === 'raw.githubusercontent.com') {
+                    const pathParts = url.pathname.split('/').filter(p => p !== '');
+                    if (pathParts.length >= 3) {
+                        const owner = pathParts[0];
+                        const repo = pathParts[1];
+                        const branch = pathParts[2];
+                        const subPath = pathParts.slice(3).join('/');
+
+                        rawUrl = inputUrl;
+                        pagesUrl = `https://${owner}.github.io/${repo}/${subPath}`;
+                    }
+                } else if (host.endsWith('.github.io')) {
+                    const owner = host.split('.')[0];
+                    const pathParts = url.pathname.split('/').filter(p => p !== '');
+                    if (pathParts.length >= 1) {
+                        const repo = pathParts[0];
+                        const subPath = pathParts.slice(1).join('/');
+                        
+                        rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${subPath}`;
+                        pagesUrl = inputUrl;
+                    }
+                }
+
+                if (!rawUrl && !pagesUrl) {
+                    rawUrl = inputUrl
+                        .replace(/https?:\/\/github\.com/i, 'https://raw.githubusercontent.com')
+                        .replace(/\/blob\//i, '/');
+                    pagesUrl = '';
+                }
+
+                rawOutput.textContent = rawUrl;
+                pagesOutput.textContent = pagesUrl || 'Not a standard path directory conversion.';
+                
+                mdOutput.textContent = `![Image](${rawUrl})`;
+                htmlOutput.textContent = `<img src="${rawUrl}" alt="Media Resource" />`;
+
+                updatePreview(rawUrl);
+                outputCard.style.display = 'block';
+
+            } catch (err) {
+                const processedFallback = inputUrl
+                    .replace(/https?:\/\/github\.com/i, 'https://raw.githubusercontent.com')
+                    .replace(/\/blob\//i, '/');
+
+                rawOutput.textContent = processedFallback;
+                pagesOutput.textContent = 'Invalid complex URL layout for Pages parsing.';
+                mdOutput.textContent = `![Image](${processedFallback})`;
+                htmlOutput.textContent = `<img src="${processedFallback}" alt="Media Resource" />`;
+                updatePreview(processedFallback);
+                outputCard.style.display = 'block';
+            }
+        }
+
+        function updatePreview(url) {
+            const isImage = /\.(jpeg|jpg|gif|png|svg|webp|bmp|ico)$/i.test(url);
+            
+            if (isImage) {
+                previewBox.innerHTML = `
+                    <img src="${url}" alt="Converted Asset Preview" onerror="handlePreviewError()" />
+                `;
+            } else {
+                previewBox.innerHTML = `
+                    <div class="placeholder-text" style="color: var(--accent-light);">
+                        Not an image asset (.jpg, .png, .svg, etc.). Asset URL is active and ready for source distribution.
+                    </div>
+                `;
+            }
+        }
+
+        function handlePreviewError() {
+            previewBox.innerHTML = `
+                <div class="placeholder-text" style="color: #ea5455;">
+                    Unable to load image preview. Double check standard directory properties or visibility credentials.
+                </div>
+            `;
+        }
+
+        convertBtn.addEventListener('click', () => {
+            processGithubUrls(urlInput.value);
+        });
+
+        urlInput.addEventListener('input', () => {
+            processGithubUrls(urlInput.value);
+        });
+
+        urlInput.addEventListener('paste', () => {
+            setTimeout(() => {
+                processGithubUrls(urlInput.value);
+            }, 50);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            urlInput.value = '';
+            outputCard.style.display = 'none';
+            showToast('Input cleared');
+        });
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const textToCopy = document.getElementById(targetId).textContent;
+
+                if (!textToCopy || textToCopy.startsWith('Invalid') || textToCopy.startsWith('Not a standard')) {
+                    showToast('Nothing valid to copy');
+                    return;
+                }
+
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = textToCopy;
+                tempTextArea.style.position = 'absolute';
+                tempTextArea.style.left = '-9999px';
+                document.body.appendChild(tempTextArea);
+                
+                tempTextArea.select();
+                tempTextArea.setSelectionRange(0, 99999);
+
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        btn.classList.add('copied');
+                        btn.textContent = 'Copied!';
+                        showToast('Copied to clipboard!', 'success');
+                        
+                        setTimeout(() => {
+                            btn.classList.remove('copied');
+                            btn.textContent = 'Copy';
+                        }, 1500);
+                    } else {
+                        showToast('Failed to copy. Try highlighting and copying manually.');
+                    }
+                } catch (err) {
+                    showToast('Fallback copy execution failed.');
+                }
+
+                document.body.removeChild(tempTextArea);
+            });
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log(reg.scope))
+                    .catch(err => console.log(err));
+            });
+        }
+    </script>
+</body>
+</html>
