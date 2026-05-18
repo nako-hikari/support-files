@@ -266,7 +266,6 @@
             overflow-x: auto;
         }
 
-        /* Custom Scrollbar for Code Elements */
         .command-box::-webkit-scrollbar {
             height: 4px;
         }
@@ -372,10 +371,17 @@ function toggleShare(){
 
 function clean(line){
     let t = line.trim();
+
+    if(document.getElementById("cleanCommands").checked){
+        // Strips patterns like "1st - ", "2. ", "3rd: ", etc. up until a valid command starts
+        t = t.replace(/^\d+(?:st|nd|rd|th)?\s*[:.\-–—]\s*/i, "");
+    }
+
     if(document.getElementById("brackets").checked){
         t = t.replace(/【/g,"[").replace(/】/g,"]");
     }
-    return t;
+
+    return t.trim();
 }
 
 function handleCopy(btn, text) {
@@ -496,5 +502,4 @@ function exportFile(type){
 </script>
 
 </body>
-  </html>
-  
+</html>
