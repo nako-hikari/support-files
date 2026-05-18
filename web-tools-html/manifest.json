@@ -1,0 +1,19 @@
+{
+  "name": "Web Tools Launcher",
+  "short_name": "Launcher",
+  "description": "A single-page standalone launcher for web tools hosted on GitHub Pages.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0e0e11",
+  "theme_color": "#18181f",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
