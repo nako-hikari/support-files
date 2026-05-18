@@ -4,16 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Tools Launcher</title>
-    
-    <!-- PWA Requirements -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Web%20Tools%20Launcher%22%2C%22short_name%22%3A%22Launcher%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230e0e11%22%2C%22theme_color%22%3A%22%2318181f%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%2520viewBox%3D%270%25200%2520512%2520512%27%253E%253Crect%2520width%3D%27512%27%2520height%3D%27512%27%2520rx%3D%27128%27%2520fill%3D%27%2318181f%27%252F%253E%253Ccircle%2520cx%3D%27256%27%2520cy%3D%27256%27%2520r%3D%27128%27%2520fill%3D%27none%27%2520stroke%3D%27%23A77A99%27%2520stroke-width%3D%2732%27%252F%253E%253Cpath%2520d%3D%27M256%252064v64M256%2520384v64M64%2520256h64M384%2520256h64%27%2520stroke%3D%27%23A77A99%27%2520stroke-width%3D%2732%27%2520stroke-linecap%3D%27round%27%252F%253E%253C%2Fsvg%3E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#18181f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <style>
         :root {
-            /* Nako-Default-Purple Color Palette */
             --bg-color: #0e0e11;
             --container-bg: #18181f;
             --input-bg: #0f0f12;
@@ -28,8 +24,6 @@
             --border-color: #2d2d38;
             --success-bg: #2a4f32;
             --success-border: #3b6e47;
-
-            /* Spacing & Layout Scale */
             --space-xs: 4px;
             --space-sm: 8px;
             --space-md: 12px;
@@ -37,26 +31,20 @@
             --space-xl: 20px;
             --space-2xl: 24px;
             --max-width: 900px;
-
-            /* Borders & Depth Elevation */
             --radius-sm: 4px;
             --radius-md: 6px;
             --radius-lg: 8px;
             --border-width: 1px;
             --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.6);
             --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.3);
-
-            /* Animation & Transitions */
             --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
@@ -70,13 +58,11 @@
             padding: var(--space-2xl) var(--space-lg);
             overflow-x: hidden;
         }
-
         @media (max-width: 600px) {
             body {
                 padding: var(--space-lg) var(--space-sm);
             }
         }
-
         .main-container {
             width: 100%;
             max-width: var(--max-width);
@@ -84,7 +70,6 @@
             flex-direction: column;
             gap: var(--space-xl);
         }
-
         header {
             background-color: var(--container-bg);
             border: var(--border-width) solid var(--border-color);
@@ -95,7 +80,6 @@
             flex-direction: column;
             gap: var(--space-md);
         }
-
         h1 {
             font-size: 1.5rem;
             font-weight: 600;
@@ -103,12 +87,10 @@
             color: var(--text-bright);
             margin: 0 0 var(--space-sm) 0;
         }
-
         .search-wrapper {
             position: relative;
             width: 100%;
         }
-
         .search-input {
             width: 100%;
             background-color: var(--input-bg);
@@ -120,24 +102,20 @@
             font-size: 14px;
             transition: all var(--transition-normal);
         }
-
         .search-input:focus {
             outline: none;
             border-color: var(--accent-light);
             box-shadow: 0 0 0 2px rgba(167, 122, 153, 0.25);
         }
-
         .search-input::placeholder {
             color: var(--text-muted);
         }
-
         .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: var(--space-lg);
             width: 100%;
         }
-
         .tool-card {
             background-color: var(--container-bg);
             border: var(--border-width) solid var(--border-color);
@@ -149,37 +127,31 @@
             flex-direction: column;
             gap: var(--space-xs);
             cursor: pointer;
-            transition: border-color var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
+            transition: all var(--transition-normal);
         }
-
         .tool-card:hover {
             border-color: var(--accent-dark);
             transform: translateY(-2px);
             box-shadow: var(--shadow-deep);
         }
-
         .tool-card:active {
             transform: translateY(0);
         }
-
         .tool-title {
             font-size: 1.1rem;
             font-weight: 500;
             color: var(--text-bright);
             transition: color var(--transition-normal);
         }
-
         .tool-card:hover .tool-title {
             color: var(--accent-light-hover);
         }
-
         .tool-tag {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-family: "Courier New", Courier, monospace;
             word-break: break-word;
         }
-
         .no-results {
             background-color: var(--container-bg);
             border: var(--border-width) solid var(--border-color);
@@ -189,8 +161,6 @@
             color: var(--text-muted);
             font-size: 1rem;
         }
-
-        /* Clean Scrollbars */
         ::-webkit-scrollbar {
             height: 5px;
             width: 5px;
@@ -217,15 +187,10 @@
                 <input type="text" id="search" class="search-input" placeholder="Search tools by name or tag..." autocomplete="off">
             </div>
         </header>
-
-        <main id="tools-container" class="tools-grid">
-            <!-- Dynamic elements populate here -->
-        </main>
+        <main id="tools-container" class="tools-grid"></main>
     </div>
 
     <script>
-        // EDITABLE TOOLS ARRAY
-        // Simply add, remove, or modify objects inside this array.
         const tools = [
             {
                 title: "JSON Formatter",
@@ -251,8 +216,22 @@
                 title: "URL Encoder / Decoder",
                 tag: "url uri formatting percent-encoding text",
                 url: "https://nako-hikari.github.io/support-files/path/to/tool.html"
+            },
+            {
+                title: "Template Title",
+                tag: "template tags spaces search terms keywords",
+                url: "https://nako-hikari.github.io/support-files/path/to/tool.html"
+            },
+            {
+                title: "Template Title",
+                tag: "template tags spaces search terms keywords",
+                url: "https://nako-hikari.github.io/support-files/path/to/tool.html"
+            },
+            {
+                title: "Template Title",
+                tag: "template tags spaces search terms keywords",
+                url: "https://nako-hikari.github.io/support-files/path/to/tool.html"
             }
-            // Array highly scales to support 50+ entries under the exact same schema.
         ];
 
         const searchInput = document.getElementById('search');
@@ -298,45 +277,18 @@
             });
         }
 
-        // Live Real-Time Search Filtering via Input Event
         searchInput.addEventListener('input', (e) => {
             renderTools(e.target.value);
         });
 
-        // Initialize execution on runtime load
         renderTools();
 
-        // Minimal Inline Service Worker setup for instant self-contained offline functionality
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                const swCode = `
-                    const CACHE_NAME = 'launcher-cache-v1';
-                    const ASSETS = [
-                        './',
-                        './index.html'
-                    ];
-
-                    self.addEventListener('install', (e) => {
-                        e.waitUntil(
-                            caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-                        );
-                    });
-
-                    self.addEventListener('fetch', (e) => {
-                        e.respondWith(
-                            caches.match(e.request).then((response) => response || fetch(e.request))
-                        );
-                    });
-                `;
-
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const workerUrl = URL.createObjectURL(blob);
-
-                navigator.serviceWorker.register(workerUrl, { scope: './' })
-                    .catch(err => console.log('Service Worker configuration bypassed: ', err));
+                navigator.serviceWorker.register('sw.js', { scope: './' })
+                    .catch(err => {});
             });
         }
     </script>
 </body>
-  </html>
-  
+</html>
