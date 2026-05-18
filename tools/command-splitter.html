@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Cleaner & Splitter — Midnight Velvet</title>
+    <style>
+        :root {
+            /* Nako-Default-Purple Color Palette */
+            --bg-color: #0e0e11;
+            --container-bg: #18181f;
+            --input-bg: #0f0f12;
+            --box-bg: #0f0f12;
+            --accent-dark: #663657;
+            --accent-dark-hover: #81456e;
+            --accent-light: #A77A99;
+            --accent-light-hover: #c5a4bc;
+            --text-main: #b4b4bc;
+            --text-muted: #5a5a66;
+            --text-bright: #ffffff;
+            --border-color: #2d2d38;
+            --success-bg: #2a4f32;
+            --success-border: #3b6e47;
+
+            /* Spacing & Layout Scale */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 12px;
+            --space-lg: 16px;
+            --space-xl: 20px;
+            --space-2xl: 24px;
+            --max-width: 900px;
+
+            /* Borders & Depth Elevation */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --border-width: 1px;
+            --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.6);
+            --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+            /* Animation & Transitions */
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: var(--space-2xl) var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: var(--space-lg) var(--space-sm);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+
+        .header-box {
+            background-color: var(--container-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            text-align: center;
+            box-shadow: var(--shadow-deep);
+            transition: border-color var(--transition-fast);
+        }
+        .header-box:hover {
+            border-color: #3d3d4a;
+        }
+
+        h1 {
+            color: var(--text-bright);
+            margin: 0 0 var(--space-sm) 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .input-area-wrapper {
+            background-color: var(--container-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            box-shadow: var(--shadow-deep);
+            transition: border-color var(--transition-fast);
+        }
+        .input-area-wrapper:hover {
+            border-color: #3d3d4a;
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            background-color: var(--input-bg);
+            color: var(--text-bright);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            resize: vertical;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+        textarea:focus {
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 2px rgba(167, 122, 153, 0.2);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xs);
+        }
+
+        .options-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .options-row input[type="checkbox"] {
+            margin: 0;
+            accent-color: var(--accent-light);
+        }
+
+        select {
+            background-color: var(--input-bg);
+            color: var(--text-bright);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: var(--space-xs) var(--space-sm);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+        select:focus {
+            border-color: var(--accent-light);
+        }
+
+        #sharePanel {
+            border-left: 2px solid var(--accent-dark);
+            padding-left: var(--space-md);
+            margin-left: var(--space-xs);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            margin-top: var(--space-xs);
+        }
+
+        .export-group {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        button.convert-btn {
+            background-color: var(--accent-dark);
+            color: var(--text-bright);
+            border: var(--border-width) solid var(--border-color);
+            padding: var(--space-md) var(--space-2xl);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background-color var(--transition-fast), transform var(--transition-fast);
+        }
+        button.convert-btn:hover {
+            background-color: var(--accent-dark-hover);
+            transform: translateY(-1px);
+        }
+
+        .export-group button {
+            background-color: transparent;
+            color: var(--text-main);
+            border: var(--border-width) solid var(--border-color);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 13px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: color var(--transition-fast), border-color var(--transition-fast);
+        }
+        .export-group button:hover {
+            color: var(--text-bright);
+            border-color: var(--text-muted);
+        }
+
+        .results-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .command-row {
+            display: flex;
+            align-items: center;
+            background-color: var(--container-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            gap: var(--space-md);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .line-num {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+            min-width: 20px;
+        }
+
+        .command-box {
+            flex-grow: 1;
+            background-color: var(--box-bg);
+            border: var(--border-width) solid rgba(255,255,255,0.02);
+            border-radius: var(--radius-sm);
+            padding: var(--space-sm) var(--space-md);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            color: var(--text-bright);
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Custom Scrollbar for Code Elements */
+        .command-box::-webkit-scrollbar {
+            height: 4px;
+        }
+        .command-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .command-box::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+
+        button.copy-btn {
+            background-color: transparent;
+            color: var(--accent-light);
+            border: var(--border-width) solid var(--accent-dark);
+            padding: var(--space-xs) var(--space-md);
+            font-size: 13px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color var(--transition-fast), color var(--transition-fast);
+        }
+        button.copy-btn:hover {
+            background-color: var(--accent-dark);
+            color: var(--text-bright);
+        }
+        
+        button.copy-btn.copied {
+            background-color: var(--success-bg);
+            border-color: var(--success-border);
+            color: var(--text-bright);
+        }
+
+        .empty-message {
+            padding: var(--space-2xl);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            background-color: var(--container-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-lg);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header-box">
+        <h1>Put your uncutted commands here</h1>
+        <p class="subtitle">Clean, extract, and divide command outputs instantly</p>
+    </div>
+
+    <div class="input-area-wrapper">
+        <textarea id="inputCommands" placeholder="Paste raw terminal lines here..."></textarea>
+
+        <div class="options-grid">
+            <div class="options-row">
+                <label><input type="checkbox" id="cleanCommands" checked> Auto clean</label>
+            </div>
+
+            <div class="options-row">
+                <label>Mode:</label>
+                <select id="mode" onchange="toggleShare()">
+                    <option value="default">Default</option>
+                    <option value="share">Share Ready</option>
+                </select>
+            </div>
+
+            <div id="sharePanel" style="display:none;">
+                <div class="options-row"><label><input type="checkbox" id="addSlash"> Add "/"</label></div>
+                <div class="options-row"><label><input type="checkbox" id="addLabels"> Add Labels</label></div>
+                <div class="options-row"><label><input type="checkbox" id="md"> Markdown</label></div>
+                <div class="options-row"><label><input type="checkbox" id="num"> Numbering</label></div>
+            </div>
+
+            <div class="options-row">
+                <label><input type="checkbox" id="brackets" checked> 【 】 → [ ]</label>
+            </div>
+        </div>
+
+        <div class="actions-row">
+            <button class="convert-btn" onclick="process()">Convert</button>
+            <div class="export-group">
+                <button onclick="exportFile('txt')">Export TXT</button>
+                <button onclick="exportFile('md')">Export MD</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="output" class="results-wrapper"></div>
+
+</div>
+
+<script>
+let lastOutput = "";
+
+function toggleShare(){
+    document.getElementById("sharePanel").style.display =
+        document.getElementById("mode").value === "share" ? "flex" : "none";
+}
+
+function clean(line){
+    let t = line.trim();
+    if(document.getElementById("brackets").checked){
+        t = t.replace(/【/g,"[").replace(/】/g,"]");
+    }
+    return t;
+}
+
+function handleCopy(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove("copied");
+        }, 1200);
+    }).catch(console.error);
+}
+
+function process(){
+    const input = document.getElementById("inputCommands").value;
+    const mode = document.getElementById("mode").value;
+    const out = document.getElementById("output");
+
+    out.innerHTML = "";
+
+    const lines = input.split(/\r?\n/).filter(l => l.trim());
+
+    if(!lines.length){
+        out.innerHTML = "<div class='empty-message'>No commands parsed yet</div>";
+        return;
+    }
+
+    if(mode === "default") {
+        let i = 1;
+        lines.forEach(l => {
+            const cmd = clean(l);
+            const row = document.createElement("div");
+            row.className = "command-row";
+
+            const numDiv = document.createElement("div");
+            numDiv.className = "line-num";
+            numDiv.textContent = i++;
+
+            const box = document.createElement("div");
+            box.className = "command-box";
+            box.textContent = cmd;
+
+            const btn = document.createElement("button");
+            btn.className = "copy-btn";
+            btn.textContent = "Copy";
+            btn.onclick = () => handleCopy(btn, cmd);
+
+            row.appendChild(numDiv);
+            row.appendChild(box);
+            row.appendChild(btn);
+            out.appendChild(row);
+        });
+        return;
+    }
+
+    let result = "";
+    let i = 1;
+
+    const slash = document.getElementById("addSlash").checked;
+    const labels = document.getElementById("addLabels").checked;
+    const md = document.getElementById("md").checked;
+    const num = document.getElementById("num").checked;
+
+    lines.forEach(l => {
+        let cmd = clean(l);
+        if(slash && !cmd.startsWith("/")) cmd = "/" + cmd;
+
+        let prefix = "";
+        let numberPart = num ? (md ? `### ${i}. ` : `${i}. `) : "";
+
+        if(labels){
+            const label = (i === 1)
+                ? "🟪 Repeat : Unconditional: Always Active"
+                : "🟩 Chain : Unconditional: Always Active";
+            prefix += numberPart + label + "\n";
+        } else {
+            prefix += numberPart;
+        }
+
+        if(md){
+            cmd = "```\n" + cmd + "\n```";
+        }
+
+        result += prefix + cmd + "\n\n";
+        i++;
+    });
+
+    lastOutput = result;
+
+    const row = document.createElement("div");
+    row.className = "command-row";
+
+    const box = document.createElement("div");
+    box.className = "command-box";
+    box.style.whiteSpace = "pre-wrap";
+    box.textContent = result;
+
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "Copy All";
+    btn.onclick = () => handleCopy(btn, result);
+
+    row.appendChild(box);
+    row.appendChild(btn);
+    out.appendChild(row);
+}
+
+function exportFile(type){
+    if(!lastOutput) return;
+    const blob = new Blob([lastOutput], {type:"text/plain"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "commands." + type;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+</script>
+
+</body>
+  </html>
+  
