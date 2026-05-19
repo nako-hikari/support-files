@@ -517,15 +517,17 @@ sizeSlider.addEventListener("input", () => {
 document.getElementById("addBtn").addEventListener("click", () => addBlock("chain"));
 
 document.getElementById("convertBtn").addEventListener("click", () => {
-    let html = `<div style="max-width: 35%; margin: 0 auto;">\n\n`;
     const totalBlocks = blocks.length;
+    
+    // Using <ol reversed start="..."> structure so GitHub Markdown outputs a true countdown tower.
+    let html = `<div style="max-width: 35%; margin: 0 auto;">\n`;
+    html += `<ol reversed start="${totalBlocks}">\n`;
 
-    blocks.forEach((block, index) => {
-        const currentNumber = totalBlocks - index;
-        html += `${currentNumber}. <img src="${TYPES[block.type].image}" width="${sizeSlider.value}"><br>\n`;
+    blocks.forEach((block) => {
+        html += `  <li><img src="${TYPES[block.type].image}" width="${sizeSlider.value}"></li>\n`;
     });
 
-    html += `\n</div>`;
+    html += `</ol>\n</div>`;
     output.value = html;
 });
 
