@@ -519,7 +519,6 @@ document.getElementById("addBtn").addEventListener("click", () => addBlock("chai
 document.getElementById("convertBtn").addEventListener("click", () => {
     const totalBlocks = blocks.length;
     
-    // Using <ol reversed start="..."> structure so GitHub Markdown outputs a true countdown tower.
     let html = `<div style="max-width: 35%; margin: 0 auto;">\n`;
     html += `<ol reversed start="${totalBlocks}">\n`;
 
@@ -538,12 +537,32 @@ document.getElementById("copyBtn").addEventListener("click", () => {
 document.getElementById("exportPngBtn").addEventListener("click", () => {
     if (blocks.length === 0) return;
 
-    const originalStyle = document.createElement('style');
-    originalStyle.innerHTML = `
-        .deleteBtn, .typeButtons { display: none !important; }
-        .block { border-color: var(--border-color) !important; }
+    const exportStyle = document.createElement('style');
+    exportStyle.innerHTML = `
+        #tower { 
+            gap: 0 !important; 
+            width: fit-content !important; 
+            margin: 0 auto !important;
+        }
+        .block { 
+            background: transparent !important; 
+            border: none !important; 
+            box-shadow: none !important; 
+            padding: 0 !important; 
+            margin: 0 !important;
+            justify-content: center !important;
+        }
+        .block img {
+            border: none !important; 
+            padding: 0 !important; 
+            background: transparent !important; 
+            display: block !important; 
+        }
+        .deleteBtn, .typeButtons, .number { 
+            display: none !important; 
+        }
     `;
-    document.head.appendChild(originalStyle);
+    document.head.appendChild(exportStyle);
 
     html2canvas(tower, {
         backgroundColor: null,
@@ -552,7 +571,7 @@ document.getElementById("exportPngBtn").addEventListener("click", () => {
         scale: window.devicePixelRatio || 2, 
         imageTimeout: 0
     }).then(canvas => {
-        originalStyle.remove();
+        exportStyle.remove();
 
         const uniqueId = Math.random().toString(36).substring(2, 6);
         const fileName = `cmd-tower-${blocks.length}-${uniqueId}.png`;
@@ -562,7 +581,7 @@ document.getElementById("exportPngBtn").addEventListener("click", () => {
         link.href = canvas.toDataURL("image/png");
         link.click();
     }).catch(err => {
-        originalStyle.remove();
+        exportStyle.remove();
         console.error(err);
     });
 });
