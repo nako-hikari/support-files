@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Command Cleaner & Splitter — Midnight Velvet</title>
+
     <style>
         :root {
             /* Nako-Default-Purple Color Palette */
@@ -84,6 +85,7 @@
             box-shadow: var(--shadow-deep);
             transition: border-color var(--transition-fast);
         }
+
         .header-box:hover {
             border-color: #3d3d4a;
         }
@@ -115,6 +117,7 @@
             box-shadow: var(--shadow-deep);
             transition: border-color var(--transition-fast);
         }
+
         .input-area-wrapper:hover {
             border-color: #3d3d4a;
         }
@@ -134,6 +137,7 @@
             outline: none;
             transition: border-color var(--transition-fast);
         }
+
         textarea:focus {
             border-color: var(--accent-light);
             box-shadow: 0 0 0 2px rgba(167, 122, 153, 0.2);
@@ -169,6 +173,7 @@
             font-size: 14px;
             outline: none;
         }
+
         select:focus {
             border-color: var(--accent-light);
         }
@@ -192,8 +197,34 @@
         }
 
         .export-group {
-            display: flex;
-            gap: var(--space-sm);
+	    display: flex;
+   	 flex-direction: column;
+  	  gap: var(--space-sm);
+		}
+		
+		.export-buttons {
+ 	   display: flex;
+  	  gap: var(--space-sm);
+	    flex-wrap: wrap;
+		}
+
+        .filename-input {
+            background-color: var(--input-bg);
+            color: var(--text-bright);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 13px;
+            outline: none;
+            transition:
+                border-color var(--transition-fast),
+                box-shadow var(--transition-fast);
+            min-width: 140px;
+        }
+
+        .filename-input:focus {
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 2px rgba(167, 122, 153, 0.2);
         }
 
         button.convert-btn {
@@ -207,8 +238,11 @@
             letter-spacing: 0.5px;
             border-radius: var(--radius-md);
             cursor: pointer;
-            transition: background-color var(--transition-fast), transform var(--transition-fast);
+            transition:
+                background-color var(--transition-fast),
+                transform var(--transition-fast);
         }
+
         button.convert-btn:hover {
             background-color: var(--accent-dark-hover);
             transform: translateY(-1px);
@@ -222,8 +256,11 @@
             font-size: 13px;
             border-radius: var(--radius-md);
             cursor: pointer;
-            transition: color var(--transition-fast), border-color var(--transition-fast);
+            transition:
+                color var(--transition-fast),
+                border-color var(--transition-fast);
         }
+
         .export-group button:hover {
             color: var(--text-bright);
             border-color: var(--text-muted);
@@ -269,9 +306,11 @@
         .command-box::-webkit-scrollbar {
             height: 4px;
         }
+
         .command-box::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .command-box::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: var(--radius-sm);
@@ -286,13 +325,16 @@
             border-radius: var(--radius-sm);
             cursor: pointer;
             white-space: nowrap;
-            transition: background-color var(--transition-fast), color var(--transition-fast);
+            transition:
+                background-color var(--transition-fast),
+                color var(--transition-fast);
         }
+
         button.copy-btn:hover {
             background-color: var(--accent-dark);
             color: var(--text-bright);
         }
-        
+
         button.copy-btn.copied {
             background-color: var(--success-bg);
             border-color: var(--success-border);
@@ -308,6 +350,70 @@
             border: var(--border-width) solid var(--border-color);
             border-radius: var(--radius-lg);
         }
+        
+        .footer {
+    margin-top: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.footer-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-light);
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.85;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--accent-light-hover);
+    opacity: 1;
+}
+
+.footer-links img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1); /* makes icons white */
+    opacity: 0.9;
+}
+
+.footer-links a.kofi {
+    color: #ff5fa2;
+    font-weight: 500;
+}
+
+.footer-links a.kofi:hover {
+    color: #ff8fc0;
+}
+
+.footer-links a.kofi img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1); 
+    opacity: 0.95;
+}
+		
     </style>
 </head>
 
@@ -321,15 +427,24 @@
     </div>
 
     <div class="input-area-wrapper">
-        <textarea id="inputCommands" placeholder="Paste raw terminal lines here..."></textarea>
+
+        <textarea
+            id="inputCommands"
+            placeholder="Paste your commands here..."
+        ></textarea>
 
         <div class="options-grid">
+
             <div class="options-row">
-                <label><input type="checkbox" id="cleanCommands" checked> Auto clean</label>
+                <label>
+                    <input type="checkbox" id="cleanCommands" checked>
+                    Auto clean
+                </label>
             </div>
 
             <div class="options-row">
                 <label>Mode:</label>
+
                 <select id="mode" onchange="toggleShare()">
                     <option value="default">Default</option>
                     <option value="share">Share Ready</option>
@@ -337,24 +452,87 @@
             </div>
 
             <div id="sharePanel" style="display:none;">
-                <div class="options-row"><label><input type="checkbox" id="addSlash"> Add "/"</label></div>
-                <div class="options-row"><label><input type="checkbox" id="addLabels"> Add Labels</label></div>
-                <div class="options-row"><label><input type="checkbox" id="md"> Markdown</label></div>
-                <div class="options-row"><label><input type="checkbox" id="num"> Numbering</label></div>
+
+                <div class="options-row">
+                    <label>
+                        <input type="checkbox" id="addSlash">
+                        Add "/"
+                    </label>
+                </div>
+
+                <div class="options-row">
+                    <label>
+                        <input type="checkbox" id="addLabels">
+                        Add Labels
+                    </label>
+                </div>
+
+                <div class="options-row">
+                    <label>
+                        <input type="checkbox" id="md">
+                        Markdown
+                    </label>
+                </div>
+
+                <div class="options-row">
+                    <label>
+                        <input type="checkbox" id="num">
+                        Numbering
+                    </label>
+                </div>
+                
+                <!--
+                <div class="options-row">
+   			 <label>
+    			    <input type="checkbox" id="spacing">
+    			    Add spacing
+  			  </label>
+			</div>
+			-->
+				
             </div>
 
             <div class="options-row">
-                <label><input type="checkbox" id="brackets" checked> 【 】 → [ ]</label>
+                <label>
+                    <input type="checkbox" id="brackets" checked>
+                    【 】 → [ ]
+                </label>
             </div>
+
         </div>
 
         <div class="actions-row">
-            <button class="convert-btn" onclick="process()">Convert</button>
+
+            <button class="convert-btn" onclick="process()">
+                Convert
+            </button>
+
             <div class="export-group">
-                <button onclick="exportFile('txt')">Export TXT</button>
-                <button onclick="exportFile('md')">Export MD</button>
+
+				<label class="filename-label" for="filenameInput">
+				    Filename
+				</label>
+
+                <input
+                    type="text"
+                    id="filenameInput"
+                    class="filename-input"
+                    placeholder="Filename..."
+                    value="commands"
+                />
+
+                <button onclick="exportFile('txt')">
+                    Export TXT
+                </button>
+
+                <button onclick="exportFile('md')">
+                    Export MD
+                </button>
+
             </div>
+
         </div>
+
     </div>
 
     <div id="output" class="results-wrapper"></div>
@@ -366,54 +544,80 @@ let lastOutput = "";
 
 function toggleShare(){
     document.getElementById("sharePanel").style.display =
-        document.getElementById("mode").value === "share" ? "flex" : "none";
+        document.getElementById("mode").value === "share"
+            ? "flex"
+            : "none";
 }
 
 function clean(line){
+
     let t = line.trim();
 
     if(document.getElementById("cleanCommands").checked){
-        // Strips patterns like "1st - ", "2. ", "3rd: ", etc. up until a valid command starts
-        t = t.replace(/^\d+(?:st|nd|rd|th)?\s*[:.\-–—]\s*/i, "");
+
+        t = t.replace(
+            /^\d+(?:st|nd|rd|th)?\s*[:.\-–—]\s*/i,
+            ""
+        );
     }
 
     if(document.getElementById("brackets").checked){
-        t = t.replace(/【/g,"[").replace(/】/g,"]");
+
+        t = t
+            .replace(/【/g, "[")
+            .replace(/】/g, "]");
     }
 
     return t.trim();
 }
 
-function handleCopy(btn, text) {
-    navigator.clipboard.writeText(text).then(() => {
-        const originalText = btn.textContent;
-        btn.textContent = "Copied!";
-        btn.classList.add("copied");
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.classList.remove("copied");
-        }, 1200);
-    }).catch(console.error);
+function handleCopy(btn, text){
+
+    navigator.clipboard.writeText(text)
+        .then(() => {
+
+            const originalText = btn.textContent;
+
+            btn.textContent = "Copied!";
+            btn.classList.add("copied");
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove("copied");
+            }, 1200);
+
+        })
+        .catch(console.error);
 }
 
 function process(){
+
     const input = document.getElementById("inputCommands").value;
     const mode = document.getElementById("mode").value;
     const out = document.getElementById("output");
 
     out.innerHTML = "";
 
-    const lines = input.split(/\r?\n/).filter(l => l.trim());
+    const lines = input
+        .split(/\r?\n/)
+        .filter(l => l.trim());
 
     if(!lines.length){
-        out.innerHTML = "<div class='empty-message'>No commands parsed yet</div>";
+
+        out.innerHTML =
+            "<div class='empty-message'>No commands parsed yet</div>";
+
         return;
     }
 
     if(mode === "default") {
+
         let i = 1;
+
         lines.forEach(l => {
+
             const cmd = clean(l);
+
             const row = document.createElement("div");
             row.className = "command-row";
 
@@ -428,37 +632,60 @@ function process(){
             const btn = document.createElement("button");
             btn.className = "copy-btn";
             btn.textContent = "Copy";
+
             btn.onclick = () => handleCopy(btn, cmd);
 
             row.appendChild(numDiv);
             row.appendChild(box);
             row.appendChild(btn);
+
             out.appendChild(row);
         });
+
         return;
     }
 
     let result = "";
     let i = 1;
 
-    const slash = document.getElementById("addSlash").checked;
-    const labels = document.getElementById("addLabels").checked;
-    const md = document.getElementById("md").checked;
-    const num = document.getElementById("num").checked;
+    const slash =
+        document.getElementById("addSlash").checked;
+
+    const labels =
+        document.getElementById("addLabels").checked;
+
+    const md =
+        document.getElementById("md").checked;
+
+    const num =
+        document.getElementById("num").checked;
 
     lines.forEach(l => {
+
         let cmd = clean(l);
-        if(slash && !cmd.startsWith("/")) cmd = "/" + cmd;
+
+        if(slash && !cmd.startsWith("/")){
+            cmd = "/" + cmd;
+        }
 
         let prefix = "";
-        let numberPart = num ? (md ? `### ${i}. ` : `${i}. `) : "";
+
+        let numberPart =
+            num
+                ? (md ? `### ${i}. ` : `${i}. `)
+                : "";
 
         if(labels){
-            const label = (i === 1)
-                ? "🟪 Repeat : Unconditional: Always Active"
-                : "🟩 Chain : Unconditional: Always Active";
+
+            const label =
+                (i === 1)
+                    ? "🟪 Repeat : Unconditional: Always Active"
+                    : "🟩 Chain : Unconditional: Always Active";
+
             prefix += numberPart + label + "\n";
+
         } else {
+
             prefix += numberPart;
         }
 
@@ -467,6 +694,7 @@ function process(){
         }
 
         result += prefix + cmd + "\n\n";
+
         i++;
     });
 
@@ -483,23 +711,78 @@ function process(){
     const btn = document.createElement("button");
     btn.className = "copy-btn";
     btn.textContent = "Copy All";
+
     btn.onclick = () => handleCopy(btn, result);
 
     row.appendChild(box);
     row.appendChild(btn);
+
     out.appendChild(row);
 }
 
 function exportFile(type){
+
     if(!lastOutput) return;
-    const blob = new Blob([lastOutput], {type:"text/plain"});
+
+    const filenameInput =
+        document.getElementById("filenameInput");
+
+    let filename = filenameInput.value.trim();
+
+    if(!filename){
+        filename = "commands";
+    }
+
+    const blob = new Blob(
+        [lastOutput],
+        { type: "text/plain" }
+    );
+
     const a = document.createElement("a");
+
     a.href = URL.createObjectURL(blob);
-    a.download = "commands." + type;
+
+    a.download = filename + "." + type;
+
     a.click();
+
     URL.revokeObjectURL(a.href);
 }
 </script>
 
+		<div class="footer">
+    <div class="footer-title">
+        By Nako Hikari
+    </div>
+
+    <div class="footer-links">
+
+        <a href="https://github.com/nako-hikari/" target="_blank" class="social">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
+            GitHub
+        </a>
+
+        <a href="https://m.youtube.com/@NaCryst" target="_blank" class="social">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+            YouTube
+        </a>
+
+        <a href="https://www.tiktok.com/@nako_hikari_mc" target="_blank" class="social">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+            TikTok
+        </a>
+
+        <a href="https://ko-fi.com/arialicee" target="_blank" class="social kofi">
+	<img 
+    src="https://raw.githubusercontent.com/nako-hikari/support-files/main/assets/kofi-icon.png"
+    alt="Ko-fi"
+>
+    Support me on Ko-fi
+</a>
+
+    </div>
+</div>
+
 </body>
 </html>
+	
