@@ -551,12 +551,14 @@ document.getElementById("exportPngBtn").addEventListener("click", () => {
             padding: 0 !important; 
             margin: 0 !important;
             justify-content: center !important;
+            border-radius: 0 !important; /* Forces layout wrapper corners straight */
         }
         .block img {
             border: none !important; 
             padding: 0 !important; 
             background: transparent !important; 
             display: block !important; 
+            border-radius: 0 !important; /* Removes internal image rounded frames */
         }
         .deleteBtn, .typeButtons, .number { 
             display: none !important; 
