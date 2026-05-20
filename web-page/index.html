@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 
 <meta
@@ -13,7 +12,7 @@
 
 <link
     rel="manifest"
-    href="manifest.json"
+    href="./manifest.json"
 >
 
 <meta
@@ -23,108 +22,448 @@
 
 <style>
 
-body{
+:root {
+    --bg-color: #0e0e11;
+    --container-bg: #18181f;
+    --input-bg: #0f0f12;
+    --box-bg: #0f0f12;
+    --accent-dark: #663657;
+    --accent-dark-hover: #81456e;
+    --accent-light: #A77A99;
+    --accent-light-hover: #c5a4bc;
+    --text-main: #b4b4bc;
+    --text-muted: #5a5a66;
+    --text-bright: #ffffff;
+    --border-color: #2d2d38;
+    --success-bg: #2a4f32;
+    --success-border: #3b6e47;
+
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 20px;
+    --space-2xl: 24px;
+    --max-width: 900px;
+
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --border-width: 1px;
+    --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.6);
+    --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*{
+    box-sizing:border-box;
     margin:0;
-    padding:20px;
+    padding:0;
+}
 
-    background:#0e0e11;
-    color:white;
+body{
+    background:var(--bg-color);
+    color:var(--text-main);
 
-    font-family:sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    font-size:14px;
+    line-height:1.5;
+
+    display:flex;
+    justify-content:center;
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    padding:
+        var(--space-2xl)
+        var(--space-lg);
+}
+
+@media (max-width:600px){
+
+    body{
+        padding:
+            var(--space-lg)
+            var(--space-sm);
+    }
+
+}
+
+.main{
+    width:100%;
+    max-width:var(--max-width);
+
+    display:flex;
+    flex-direction:column;
+
+    gap:var(--space-xl);
+}
+
+.hero{
+    background:var(--container-bg);
+
+    border:
+        var(--border-width)
+        solid
+        var(--border-color);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-deep);
+
+    padding:var(--space-2xl);
+
+    display:flex;
+    flex-direction:column;
+
+    gap:var(--space-md);
 }
 
 h1{
-    margin-bottom:20px;
+    font-size:1.55rem;
+    font-weight:600;
+    line-height:1.3;
+
+    color:var(--text-bright);
 }
 
-#search{
+.sub{
+    color:var(--text-muted);
+    font-size:13px;
+}
+
+.search{
     width:100%;
 
-    padding:12px;
+    background:var(--input-bg);
 
-    border:none;
-    border-radius:10px;
+    border:
+        var(--border-width)
+        solid
+        var(--border-color);
 
-    background:#1b1b22;
-    color:white;
+    border-radius:var(--radius-md);
 
-    margin-bottom:20px;
+    color:var(--text-bright);
 
-    box-sizing:border-box;
+    padding:var(--space-md);
+
+    font-size:14px;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    transition:
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
+}
+
+.search:focus{
+    outline:none;
+
+    border-color:var(--accent-light);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(167,122,153,.22);
+}
+
+.search::placeholder{
+    color:var(--text-muted);
 }
 
 .grid{
     display:grid;
 
     grid-template-columns:
-        repeat(auto-fill,minmax(220px,1fr));
+        repeat(auto-fill,minmax(250px,1fr));
 
-    gap:15px;
+    gap:var(--space-lg);
 }
 
 .card{
-    display:block;
+    background:var(--container-bg);
 
-    padding:16px;
+    border:
+        var(--border-width)
+        solid
+        var(--border-color);
 
-    background:#1b1b22;
+    border-radius:var(--radius-lg);
 
-    border-radius:14px;
+    box-shadow:var(--shadow-soft);
 
     text-decoration:none;
 
-    color:white;
+    padding:var(--space-xl);
+
+    display:flex;
+    flex-direction:column;
+
+    gap:var(--space-xs);
+
+    transition:
+        border-color var(--transition-normal),
+        transform var(--transition-fast);
 }
 
 .card:hover{
-    background:#242430;
+    border-color:var(--accent-dark-hover);
+
+    transform:translateY(-2px);
+}
+
+.card:active{
+    transform:translateY(0);
+}
+
+.title{
+    color:var(--text-bright);
+
+    font-size:1.05rem;
+    font-weight:500;
 }
 
 .tag{
-    opacity:.6;
-    font-size:.85rem;
-    margin-top:6px;
+    color:var(--accent-light);
+
+    font-size:12px;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    word-break:break-word;
+}
+
+.empty{
+    background:var(--container-bg);
+
+    border:
+        var(--border-width)
+        solid
+        var(--border-color);
+
+    border-radius:var(--radius-lg);
+
+    padding:var(--space-2xl);
+
+    text-align:center;
+
+    color:var(--text-muted);
+}
+
+::-webkit-scrollbar{
+    width:5px;
+    height:5px;
+}
+
+::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+::-webkit-scrollbar-thumb{
+    background:var(--border-color);
+    border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:var(--accent-light);
+}
+
+.footer {
+    margin-top: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: center;
+    width: 100%;
+}
+
+.footer-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-light);
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.85;
+    transition:
+        opacity var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--accent-light-hover);
+    opacity: 1;
+}
+
+.footer-links img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.footer-links a.kofi {
+    color: #ff5fa2;
+    font-weight: 500;
+}
+
+.footer-links a.kofi:hover {
+    color: #ff8fc0;
+}
+
+.footer-links a.kofi img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
 }
 
 </style>
-
 </head>
 <body>
 
-<h1>Web Tools Launcher</h1>
+<div class="main">
 
-<input
-    id="search"
-    type="text"
-    placeholder="Search..."
->
+    <div class="hero">
 
-<div
-    id="grid"
-    class="grid"
-></div>
+        <h1>Web Tools Launcher</h1>
+
+        <div class="sub">
+            Small utilities and Minecraft tools.
+        </div>
+
+        <input
+            id="search"
+            class="search"
+            type="text"
+            placeholder="Search tools by name or tag..."
+            autocomplete="off"
+        >
+
+    </div>
+
+    <div
+        id="grid"
+        class="grid"
+    ></div>
+
+    <div class="footer">
+
+        <div class="footer-title">
+            By Nako Hikari
+        </div>
+
+        <div class="footer-links">
+
+            <a
+                href="https://github.com/nako-hikari/"
+                target="_blank"
+                class="social"
+            >
+                <img
+                    src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg"
+                    alt="GitHub"
+                >
+                GitHub
+            </a>
+
+            <a
+                href="https://m.youtube.com/@NaCryst"
+                target="_blank"
+                class="social"
+            >
+                <img
+                    src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
+                    alt="YouTube"
+                >
+                YouTube
+            </a>
+
+            <a
+                href="https://www.tiktok.com/@nako_hikari_mc"
+                target="_blank"
+                class="social"
+            >
+                <img
+                    src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg"
+                    alt="TikTok"
+                >
+                TikTok
+            </a>
+
+            <a
+                href="https://ko-fi.com/arialicee"
+                target="_blank"
+                class="social kofi"
+            >
+                <img
+                    src="https://raw.githubusercontent.com/nako-hikari/support-files/main/assets/kofi-icon.png"
+                    alt="Ko-fi"
+                >
+                Support me on Ko-fi
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script>
 
-const tools = [
+const list = [
 
-{
-    title:"Command Splitter",
-    tag:"Minecraft",
-    url:"https://nako-hikari.github.io/support-files/tools/command-splitter.html"
-},
+    {
+        title:"Command Splitter",
+        tag:"minecraft command utility",
+        url:"https://nako-hikari.github.io/support-files/tools/command-splitter.html"
+    },
 
-{
-    title:"Command Block Tower Builder",
-    tag:"Minecraft",
-    url:"https://nako-hikari.github.io/support-files/tools/cmd-tower-builder.html"
-},
+    {
+        title:"Command Block Tower Builder",
+        tag:"minecraft redstone commandblock",
+        url:"https://nako-hikari.github.io/support-files/tools/cmd-tower-builder.html"
+    },
 
-{
-    title:"Auto Fill Rnd Command",
-    tag:"Minecraft",
-    url:"https://nako-hikari.github.io/minecraft-bedrock/tools/rnd_command_autofill.html"
-}
+    {
+        title:"Auto Fill Rnd Command",
+        tag:"minecraft random command helper",
+        url:"https://nako-hikari.github.io/minecraft-bedrock/tools/rnd_command_autofill.html"
+    }
 
 ];
 
@@ -134,61 +473,84 @@ const grid =
 const search =
     document.getElementById("search");
 
-function render(text=""){
+function draw(q=""){
 
-    const q =
-        text.toLowerCase();
+    const value =
+        q.toLowerCase().trim();
 
-    grid.innerHTML="";
+    grid.innerHTML = "";
 
-    tools
-    .filter(tool=>
+    const results = list.filter(item => {
 
-        tool.title
-        .toLowerCase()
-        .includes(q)
+        return (
+            item.title.toLowerCase().includes(value)
+            ||
+            item.tag.toLowerCase().includes(value)
+        );
 
-        ||
+    });
 
-        tool.tag
-        .toLowerCase()
-        .includes(q)
+    if(!results.length){
 
-    )
+        const empty =
+            document.createElement("div");
 
-    .forEach(tool=>{
+        empty.className = "empty";
 
-        const a =
+        empty.textContent =
+            "No matching tools.";
+
+        grid.appendChild(empty);
+
+        return;
+    }
+
+    results.forEach(item => {
+
+        const card =
             document.createElement("a");
 
-        a.className="card";
+        card.className = "card";
 
-        a.href=tool.url;
+        card.href = item.url;
 
-        a.innerHTML=`
-
-            <div>${tool.title}</div>
-
-            <div class="tag">
-                ${tool.tag}
+        card.innerHTML = `
+            <div class="title">
+                ${item.title}
             </div>
 
+            <div class="tag">
+                ${item.tag}
+            </div>
         `;
 
-        grid.appendChild(a);
+        grid.appendChild(card);
 
     });
 
 }
 
-search.addEventListener(
-    "input",
-    e=>render(e.target.value)
-);
+search.addEventListener("input", e => {
+    draw(e.target.value);
+});
 
-render();
+draw();
+
+if("serviceWorker" in navigator){
+
+    navigator.serviceWorker
+        .getRegistrations()
+        .then(regs => {
+
+            regs.forEach(reg => {
+                reg.unregister();
+            });
+
+        });
+
+}
 
 </script>
 
 </body>
-  </html>
+</html>
