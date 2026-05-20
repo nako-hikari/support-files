@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Web Tools Launcher</title>
+
+<link
+    rel="manifest"
+    href="manifest.json"
+>
+
+<meta
+    name="theme-color"
+    content="#18181f"
+>
+
+<style>
+
+body{
+    margin:0;
+    padding:20px;
+
+    background:#0e0e11;
+    color:white;
+
+    font-family:sans-serif;
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+#search{
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#1b1b22;
+    color:white;
+
+    margin-bottom:20px;
+
+    box-sizing:border-box;
+}
+
+.grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(220px,1fr));
+
+    gap:15px;
+}
+
+.card{
+    display:block;
+
+    padding:16px;
+
+    background:#1b1b22;
+
+    border-radius:14px;
+
+    text-decoration:none;
+
+    color:white;
+}
+
+.card:hover{
+    background:#242430;
+}
+
+.tag{
+    opacity:.6;
+    font-size:.85rem;
+    margin-top:6px;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>Web Tools Launcher</h1>
+
+<input
+    id="search"
+    type="text"
+    placeholder="Search..."
+>
+
+<div
+    id="grid"
+    class="grid"
+></div>
+
+<script>
+
+const tools = [
+
+{
+    title:"Command Splitter",
+    tag:"Minecraft",
+    url:"https://nako-hikari.github.io/support-files/tools/command-splitter.html"
+},
+
+{
+    title:"Command Block Tower Builder",
+    tag:"Minecraft",
+    url:"https://nako-hikari.github.io/support-files/tools/cmd-tower-builder.html"
+},
+
+{
+    title:"Auto Fill Rnd Command",
+    tag:"Minecraft",
+    url:"https://nako-hikari.github.io/minecraft-bedrock/tools/rnd_command_autofill.html"
+}
+
+];
+
+const grid =
+    document.getElementById("grid");
+
+const search =
+    document.getElementById("search");
+
+function render(text=""){
+
+    const q =
+        text.toLowerCase();
+
+    grid.innerHTML="";
+
+    tools
+    .filter(tool=>
+
+        tool.title
+        .toLowerCase()
+        .includes(q)
+
+        ||
+
+        tool.tag
+        .toLowerCase()
+        .includes(q)
+
+    )
+
+    .forEach(tool=>{
+
+        const a =
+            document.createElement("a");
+
+        a.className="card";
+
+        a.href=tool.url;
+
+        a.innerHTML=`
+
+            <div>${tool.title}</div>
+
+            <div class="tag">
+                ${tool.tag}
+            </div>
+
+        `;
+
+        grid.appendChild(a);
+
+    });
+
+}
+
+search.addEventListener(
+    "input",
+    e=>render(e.target.value)
+);
+
+render();
+
+</script>
+
+</body>
+  </html>
