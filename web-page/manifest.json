@@ -1,0 +1,16 @@
+{
+  "name": "Web Tools Launcher",
+  "short_name": "Launcher",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "browser",
+  "theme_color": "#18181f",
+  "background_color": "#0e0e11",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
