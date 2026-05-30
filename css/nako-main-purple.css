@@ -1,0 +1,280 @@
+/* ==========================================================================
+   1. NAKO DESIGN SYSTEM CONFIGURATION & TOKENS
+   ========================================================================== */
+:root {
+    /* Chromium Dark Mode Image Shield Token */
+    color-scheme: light dark;
+
+    /* Nako-Default-Purple Color Palette */
+    --bg-color: #0e0e11;
+    --container-bg: #18181f;
+    --input-bg: #0f0f12;
+    --box-bg: #0f0f12;
+    --accent-dark: #663657;
+    --accent-dark-hover: #81456e;
+    --accent-light: #A77A99;
+    --accent-light-hover: #c5a4bc;
+    --text-main: #b4b4bc;
+    --text-muted: #5a5a66;
+    --text-bright: #ffffff;
+    --border-color: #2d2d38;
+    --success-bg: #2a4f32;
+    --success-border: #3b6e47;
+
+    /* Spacing & Layout Scale */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 20px;
+    --space-2xl: 24px;
+    --max-width: 900px;
+
+    /* Borders & Depth Elevation */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --border-width: 1px;
+    --shadow-deep: 0 6px 16px rgba(0, 0, 0, 0.6);
+    --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+    /* Animation & Transitions */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Tap Highlight Stripping Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================================================
+   2. PAGE LAYOUT & RESPONSIVENESS
+   ========================================================================== */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--space-2xl) var(--space-lg);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: var(--space-lg) var(--space-sm);
+    }
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: var(--max-width);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+/* Prevent Horizontal Body Overflow Container */
+.overflow-scroll {
+    overflow-x: auto;
+}
+
+/* ==========================================================================
+   3. TYPOGRAPHY
+   ========================================================================== */
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-bright);
+}
+
+h2 {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-bright);
+}
+
+code, pre, input, .monospace {
+    font-family: "Courier New", Courier, monospace;
+}
+
+/* ==========================================================================
+   4. COMPONENT SPECIFICATIONS
+   ========================================================================== */
+/* Cards Structure */
+.card {
+    background: var(--container-bg);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-deep);
+    padding: var(--space-xl);
+    transition: border-color var(--transition-normal);
+}
+
+.card:hover {
+    border-color: var(--accent-light); /* Subtle border brighten only */
+}
+
+/* Inputs fields */
+input, textarea {
+    background: var(--input-bg);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-bright);
+    padding: var(--space-sm) var(--space-md);
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+input:focus, textarea:focus {
+    border-color: var(--accent-light);
+}
+
+/* Primary Action Buttons */
+.btn-primary {
+    background: var(--accent-dark);
+    color: var(--text-bright);
+    border: var(--border-width) solid transparent;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-xl);
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-primary:hover {
+    background: var(--accent-dark-hover);
+}
+
+/* Secondary Action Buttons */
+.btn-secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 13px;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-secondary:hover {
+    color: var(--text-main);
+    border-color: var(--text-muted);
+}
+
+/* Code/Output Presentation Boxes */
+.output-box {
+    background: var(--box-bg);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+/* Header Navigation Exceptions */
+.header-toggle .line {
+    background-color: #ffffff !important;
+}
+
+/* ==========================================================================
+   5. INTERACTION & PRESS ACTIVE FEEDBACK
+   ========================================================================== */
+/* Apply light-up sequence strictly to operational interactive assets */
+button:active, 
+.btn-primary:active, 
+.btn-secondary:active, 
+a.social:active,
+.interactive-target:active {
+    border-color: var(--accent-light-hover) !important;
+    background: #1e1924 !important;
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   6. CHROMIUM FORCE-DARK-MODE SHIELD
+   ========================================================================== */
+img {
+    color-scheme: only light !important;
+}
+
+/* ==========================================================================
+   7. STANDARDIZED FOOTER SYSTEM
+   ========================================================================== */
+.footer {
+    margin-top: var(--space-2xl, 32px);
+    padding-bottom: var(--space-lg, 16px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm, 8px);
+    align-items: center;
+    width: 100%;
+}
+
+.footer-title {
+    font-size: 12px;
+    color: var(--text-muted, #5a5a66);
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--space-md, 12px);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-light, #A77A99);
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.85;
+    transition: opacity var(--transition-fast, 0.15s), color var(--transition-fast, 0.15s);
+}
+
+.footer-links a:hover {
+    color: var(--accent-light-hover, #c5a4bc);
+    opacity: 1;
+}
+
+/* Custom override for simple icon handling in dark context */
+.footer-links img {
+    width: 16px;
+    height: 16px;
+    color-scheme: dark !important;
+    filter: brightness(0) invert(1) !important;
+    opacity: 0.9;
+}
+
+/* Ko-fi Unique Theme Overrides */
+.footer-links a.kofi {
+    color: #ff5fa2;
+    font-weight: 500;
+}
+
+.footer-links a.kofi:hover {
+    color: #ff8fc0;
+}
+
+.footer-links a.kofi img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.95;
+}
