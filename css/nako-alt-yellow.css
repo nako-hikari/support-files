@@ -5,7 +5,7 @@
     /* Chromium Dark Mode Image Shield Token */
     color-scheme: light dark;
 
-    /* Witch-Atelier-Yellowish Color Palette */
+    /* Nako Yellowish Color Palette */
     --bg-color: #1a1512;          /* Very dark warm charcoal brown from the image outer border */
     --container-bg: #2d241e;      /* Deep chocolate tone for structural sidebar containers */
     --input-bg: #eae3cb;          /* Parchment tan/cream for active UI panel fields */
@@ -14,8 +14,10 @@
     --accent-dark-hover: #4b6b6a; /* Brighter slate teal for primary hover states */
     --accent-light: #806854;      /* Deep tan border highlight tone */
     --accent-light-hover: #eae3cb;/* Bright parchment border/text highlight */
+    
+    /* --- FIXED CONTRAST TOKENS --- */
     --text-main: #bdae93;         /* Soft warm gray/tan text for standard readability */
-    --text-muted: #6b5a4c;        /* Low contrast dark parchment for passive captions/labels */
+    --text-muted: #2a1d13;        /* FIXED: Swapped faint brown for high-contrast dark espresso */
     --text-bright: #f2ebd4;       /* High-vibrancy ivory cream for title headers */
     --border-color: #42352b;      /* Clean divider lines for structural dark tiles */
     --success-bg: #3c4839;        /* Forest green tone for valid/stable items */
@@ -125,33 +127,44 @@ code, pre, input, .monospace {
     border-color: var(--accent-light); /* Subtle warm accent brighten */
 }
 
-/* Whimsical Stitched Border Container */
+/* FIXED: Whimsical Stitched Border Container (Flattened to reduce "too many boxes") */
 .card-stitched {
-    background: var(--container-bg);
-    border: 2px dashed var(--border-color); /* Creates the stitch/stripe look */
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-soft);
-    padding: var(--space-xl);
-    transition: border-color var(--transition-normal);
+    background: transparent !important; /* Strips nested container background background */
+    border: none !important;            /* Removes the busy dashed line container entirely */
+    box-shadow: none !important;        /* Eliminates shadow stacking */
+    padding: var(--space-sm) 0 !important; /* Tighter vertical spacing */
 }
 
-.card-stitched:hover {
-    border-color: var(--accent-light); /* Stitches glow softly on hover */
-}
-
-/* Inputs fields (Parchment Themed) */
+/* Inputs fields (Parchment Themed with high text contrast) */
 input, textarea {
     background: var(--input-bg);
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--radius-md);
-    color: #1a1512; /* Dark typography for parchment paper background readable contrast */
+    color: #1a1008 !important;         /* FIXED: Deep dark coffee brown for ultra-sharp reading contrast */
+    font-weight: 500;
     padding: var(--space-sm) var(--space-md);
     outline: none;
     transition: border-color var(--transition-fast);
 }
 
+/* Inline single coordinate box overrides (e.g., XZ, Y, ypos) */
+.card-stitched input {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid var(--border-color) !important; /* Flat clean underline instead of a boxed field */
+    border-radius: 0 !important;
+    color: var(--text-bright) !important; /* Uses the bright theme color since it sits directly on dark background */
+    padding: 2px var(--space-sm) !important;
+}
+
 input:focus, textarea:focus {
     border-color: var(--accent-dark);
+}
+
+/* Target internal sub-labels directly to inherit the corrected text-muted color */
+label, .sub-label, span {
+    color: var(--text-muted);
+    font-weight: 600; /* Extra bold weighting to prevent muddy readability */
 }
 
 /* Primary Action Buttons (Teal Accent) */
@@ -174,7 +187,7 @@ input:focus, textarea:focus {
 /* Secondary Action Buttons */
 .btn-secondary {
     background: transparent;
-    color: var(--text-muted);
+    color: var(--text-main); /* Pop color slightly out from background */
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--radius-md);
     padding: var(--space-xs) var(--space-sm);
@@ -184,8 +197,8 @@ input:focus, textarea:focus {
 }
 
 .btn-secondary:hover {
-    color: var(--text-main);
-    border-color: var(--text-muted);
+    color: var(--text-bright);
+    border-color: var(--accent-light);
 }
 
 /* Code/Output Presentation Boxes */
@@ -193,7 +206,7 @@ input:focus, textarea:focus {
     background: var(--box-bg);
     border: var(--border-width) solid var(--border-color);
     border-radius: var(--radius-md);
-    color: #1a1512; /* Clean contrast for parchment boxes */
+    color: #1a1008 !important; /* Clean contrast for parchment boxes */
     padding: var(--space-md);
     white-space: nowrap;
     overflow-x: auto;
@@ -241,8 +254,8 @@ img {
 
 .footer-title {
     font-size: 12px;
-    color: var(--text-muted, #5a5a66);
-    opacity: 0.75;
+    color: var(--text-main);
+    opacity: 0.6;
     letter-spacing: 0.5px;
 }
 
